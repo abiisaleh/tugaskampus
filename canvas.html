@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas 🐱</title>
+    <style>
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .switch {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #6edc5f;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #6edc5f;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <label class="switch">
+        <input type="checkbox" checked onchange="darkMode()">
+        <span class="slider round"></span>
+    </label>
+    <canvas width="1366" height="650"></canvas>
+
+    <script>
+        var canvas = document.querySelector("canvas")
+        var ctx = canvas.getContext("2d")
+
+        //color
+        var blue = "#548cc7"
+        var purpel = "#aa80fe"
+        var red = "#cc6698"
+        var green = "#68cb9c"
+        var white = "#ffffff55"
+        var sky = "#bbeeff"
+        var sun = "#ffcf34"
+        var sunx = "yellow"
+
+        //Dark Mode
+        function darkMode() {
+            if (document.querySelector("input").checked == false) {
+                blue = "black"
+                purpel = "black"
+                red = "black"
+                green = "black"
+                sky = "#232234"
+                sun = "white"
+                sunx = white
+                draw()
+            } else {
+                blue = "#548cc7"
+                purpel = "#aa80fe"
+                red = "#cc6698"
+                green = "#68cb9c"
+                white = "#ffffff55"
+                sky = "#bbeeff"
+                sun = "#ffcf34"
+                sunx = "yellow"
+                draw()
+            }
+        }
+        draw()
+        function draw() {
+            //sky
+            ctx.beginPath()
+            ctx.fillStyle = sky
+            ctx.fillRect(0,0,canvas.width,canvas.height)
+
+            //sun
+            var grd = ctx.createRadialGradient(200,80,50,200,80,300)
+            grd.addColorStop(0, sun)
+            grd.addColorStop(0.01, sun)
+            grd.addColorStop(0.02, sunx)
+            grd.addColorStop(1, "#ffffff00")
+            ctx.arc(200,80,300,0,2*Math.PI,false)
+            ctx.fillStyle = grd
+            ctx.fill()
+
+            //building
+            function build(x,y,color,w = 0,h = 0) {
+                ctx.fillStyle = color
+                ctx.fillRect(x,y,135+w,canvas.height+h)
+            }
+
+            //first Layer
+            for (let i = 4; i > 0; i--) {
+                var grdY = ctx.createLinearGradient(240+10*i,330-40*i-20,240+10*i,500)
+                grdY.addColorStop(0,purpel)
+                grdY.addColorStop(1,"white")
+                build(240+10*i,330-40*i,grdY,-20*i,-10)
+            }
+
+            var grdY = ctx.createLinearGradient(240,410,240,950)
+            grdY.addColorStop(0.2,purpel)
+            grdY.addColorStop(1,"white")
+            build(240,330,grdY,0,-10)
+
+            build(480,370,green)
+            for (let i = 0; i < 10; i++) {
+                build(480,390+i*28,white,0,-640)
+            }
+            build(720,300,red)
+            for (let i = 0; i < 6; i++) {
+                var grdX = ctx.createLinearGradient(730+i*20,300,735+i*20,300)
+                grdX.addColorStop(0,"#FFFFFF00")
+                grdX.addColorStop(1,white)
+                build(730+i*20,300,grdX,-125)
+            }
+            build(1063,260,blue,-130)
+            for (let i = 0; i < 2; i++) {
+                build(1000+10*i,330-20*i,blue,-20*i)
+            }
+            for (let i = 0; i < 4; i++) {
+                build(1010+i*30,345,white,-110,-360)
+            }
+
+            //seccond Layer
+            build(140,340,blue)
+            build(165,290,blue,-50)
+            for (let i = 0; i < 6; i++) {
+                build(150+i*21,360,white,-125,-400)
+            }
+            ctx.beginPath()
+            ctx.moveTo(207,230)
+            ctx.lineTo(175,290)
+            ctx.lineTo(240,290)
+            ctx.closePath()
+            ctx.fillStyle = blue
+            ctx.fill()
+
+            build(350,470,red)
+            for (let i = 0; i < 3; i++) {
+                build(358+i*42,470,white,-100)
+            }
+            ctx.beginPath()
+            ctx.moveTo(350,470)
+            ctx.lineTo(370,400)
+            ctx.lineTo(470,400)
+            ctx.lineTo(485,470)
+            ctx.closePath()
+            ctx.fillStyle = red
+            ctx.fill()
+
+            build(600,450,purpel)
+            build(590,490,purpel,+20,-580)
+            build(590,590,purpel,+20,-580)
+            for (let i = 0; i < 3; i++) {
+                build(605+i*44,455,white,-100,-620)
+            }
+            
+            build(915,400,purpel)
+            ctx.beginPath()
+            ctx.moveTo(915,400)
+            ctx.lineTo(915,350)
+            ctx.lineTo(1050,400)
+            ctx.closePath()
+            ctx.fillStyle = purpel
+            ctx.fill()
+
+            for (let i = 0; i < 2; i++) {
+                for (let j = 0; j < 3; j++) {  
+                    ctx.beginPath()
+                    ctx.arc(955+i*60,430+j*80,20,900,2*Math.PI,true)
+                    ctx.fillStyle = white
+                    ctx.fill()
+                }
+            }
+
+            build(1115,450,red)
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    build(1125+i*45,460+j*60,white,-110,-600)
+                }
+            }
+            //thrid Layer
+            build(815,430,green)
+            for (let i = 0; i < 2; i++) {
+                for (let j = 0; j < 10; j++) {
+                    build(825+i*70,440+j*25,white,-90,-640)
+                }
+            }
+        }
+    </script>
+</body>
+</html>
